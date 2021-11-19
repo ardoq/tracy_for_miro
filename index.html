@@ -55,7 +55,6 @@
         let linesFrom = [];
         if (selectedObjects.length > 0) {
             for (const object in selectedObjects) {
-                if (selectedObjects[object].type == 'IMAGE') {
                     let objectId = selectedObjects[object].id;
 
                     let linesToTemp = await miro.board.widgets.get({ type: 'line', endWidgetId: objectId });
@@ -68,7 +67,6 @@
                     linesFromTemp.forEach(line => {
                         linesFrom.push(line)
                     })
-                }
                 if (linesFrom.length > 0 && checkLinesFrom) {
                     //console.log(linesFrom.length + " lines from objects")
                     for (const line in linesFrom) {
