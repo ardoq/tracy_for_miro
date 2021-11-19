@@ -20,10 +20,6 @@
 
     let getLinesTo = async function(lines) {
 
-        for (var teamMember in designTeam) {
-            teamMember.migrateToFigma();
-        }
-
         loadCount++;
         let objects = [];
         for (const line in lines) {
