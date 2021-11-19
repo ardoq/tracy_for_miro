@@ -5,6 +5,10 @@ Furthermore, it allows to trace the connections of the connected objects up- and
 > Please use this with caution, since it might overwrite the style of all connections in a Miro board.  
 
 ## How to use the plugin
+### Installing the plugin
+Even if the icon already shows up in your board, you first need to install the plugin for you personal account using this link
+https://miro.com/oauth/authorize/?response_type=code&client_id=3074457367675160494&redirect_uri=%2Fconfirm-app-install%2F
+
 ### Enabling the plugin
 To enable the plugin, click the Icon in the Miro toolbar. After confirming the security prompt, the plugin is activated and can be used.
 After enabling the plugin, the object menu is extended by four additional actions.
