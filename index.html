@@ -190,13 +190,13 @@
                     onClick: () => {
                         if(!activatedExtension){
                              var r = confirm("This is an experimental extension for hiding and highlighting paths. Only proceed if you know what this is. Otherwise THIS MIGHT MESS UP YOUR BOARD. More info https://github.com/ardoq/tracy_for_miro");
-                             if (r == true) {
-                                initFunctions();
-                                activatedExtension = true;
-                            }
                         }else{
                             alert("You already activated the extension. Select one or more elements to access the functions. If nothing happens, make sure you've activated the extension for your personal Miro account. More info https://github.com/ardoq/tracy_for_miro")
                         }
+                        if (r == true) {
+                                initFunctions();
+                                activatedExtension = true;
+                            }
                     }
                 }
             }
