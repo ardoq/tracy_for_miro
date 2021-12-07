@@ -24,7 +24,6 @@
         let objects = [];
         for (const line in lines) {
             let object = await miro.board.widgets.get({ id: lines[line].startWidgetId });
-            console.log(typeof inspectedObjects[object[0].id])
             if (typeof inspectedObjects[object[0].id] == "undefined") {
                 inspectedObjects[object[0].id] = { "checked": true };
                 objects.push(object[0])
@@ -39,7 +38,6 @@
         let objects = [];
         for (const line in lines) {
             let object = await miro.board.widgets.get({ id: lines[line].endWidgetId });
-            console.log(typeof inspectedObjects[object[0].id])
             if (typeof inspectedObjects[object[0].id] == "undefined") {
                 inspectedObjects[object[0].id] = { "checked": true };
                 objects.push(object[0])
@@ -70,7 +68,6 @@
                     })
                 }
                 if (linesFrom.length > 0 && checkLinesFrom) {
-                    //console.log(linesFrom.length + " lines from objects")
                     for (const line in linesFrom) {
                         linesFrom[line].clientVisible = true
                         linesFrom[line].style = { 'lineColor': '#8fd14f', 'lineThickness': 5 }
@@ -78,13 +75,9 @@
                     if (propagateFrom) {
                         getLinesFrom(linesFrom);
                     }
-                    await miro.board.widgets.bringForward(linesFrom)
-                    await miro.board.widgets.update(linesFrom)
                 } else {
-                    //console.log("No lines from objects")
                 }
                 if (linesTo.length > 0 && checkLinesTo) {
-                    //console.log(linesTo.length + " lines to objects")
                     for (const line in linesTo) {
                         linesTo[line].clientVisible = true
                         linesTo[line].style = { 'lineColor': '#f24726', 'lineThickness': 5 }
@@ -92,17 +85,21 @@
                     if (propagateTo) {
                         getLinesTo(linesTo);
                     }
-                    await miro.board.widgets.bringForward(linesTo)
-                    await miro.board.widgets.update(linesTo)
                 } else {
-                    //console.log("No lines to objects")
                 }
             }
         } else {
-            //console.log("No component selected")
         }
         if (loadCount == 0) {
             inspectedObjects = {};
+            if (linesTo.length > 0 && checkLinesTo) {
+                await miro.board.widgets.bringForward(linesTo)
+                await miro.board.widgets.update(linesTo)
+            }
+            if (linesFrom.length > 0 && checkLinesFrom) {
+                await miro.board.widgets.bringForward(linesFrom)
+                await miro.board.widgets.update(linesFrom)
+            }
             miro.board.ui.closeBottomPanel()
         }
     }
@@ -111,7 +108,6 @@
         //console.log("Connections are getting highlighted, please wait...");
         let selectedObjects = await miro.board.selection.get()
         selectedObjects.forEach(object => {
-            console.log(object.id)
             inspectedObjects[object.id] = { "checked": true };
         })
         highlightLinesWorker(selectedObjects);
@@ -129,6 +125,16 @@
         miro.board.widgets.update(lines)
         miro.board.ui.closeBottomPanel()
     }
+    let goToObjectFrom = async function(){
+        let selectedWidgets = await miro.board.selection.get()
+        let sticker = selectedWidgets[0]
+        miro.board.viewport.zoomToObject(selectedWidgets[0].startWidgetId)
+    }
+    let goToObjectTo = async function(){
+        let selectedWidgets = await miro.board.selection.get()
+        let sticker = selectedWidgets[0]
+        miro.board.viewport.zoomToObject(selectedWidgets[0].endWidgetId)
+    }
     let initFunctions = function() {
         miro.initialize({
             extensionPoints: {
@@ -137,7 +143,6 @@
                         tooltip: 'trace direct connections',
                         svgIcon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <rect width="24" height="24" fill="white"/> <path d="M7 3.5C7 4.88071 5.88071 6 4.5 6C3.11929 6 2 4.88071 2 3.5C2 2.11929 3.11929 1 4.5 1C5.88071 1 7 2.11929 7 3.5Z" fill="#050038"/> <path d="M13 11C13 12.6569 11.6569 14 10 14C8.34315 14 7 12.6569 7 11C7 9.34315 8.34315 8 10 8C11.6569 8 13 9.34315 13 11Z" fill="#050038"/> <path d="M21 5.5C21 6.88071 19.8807 8 18.5 8C17.1193 8 16 6.88071 16 5.5C16 4.11929 17.1193 3 18.5 3C19.8807 3 21 4.11929 21 5.5Z" fill="#050038"/> <path d="M22 15.5C22 16.8807 20.8807 18 19.5 18C18.1193 18 17 16.8807 17 15.5C17 14.1193 18.1193 13 19.5 13C20.8807 13 22 14.1193 22 15.5Z" fill="#050038"/> <path d="M15 20.5C15 21.8807 13.8807 23 12.5 23C11.1193 23 10 21.8807 10 20.5C10 19.1193 11.1193 18 12.5 18C13.8807 18 15 19.1193 15 20.5Z" fill="#050038"/> <path d="M7 17.5C7 18.8807 5.88071 20 4.5 20C3.11929 20 2 18.8807 2 17.5C2 16.1193 3.11929 15 4.5 15C5.88071 15 7 16.1193 7 17.5Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L4 4L4.75926 3.34921L10.7593 10.3492L10 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L18 5L18.6 5.8L10.6 11.8L10 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11 11L19 15L18.5528 15.8944L10.5528 11.8944L11 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L13 20L12.0513 20.3162L9.05132 11.3162L10 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L4 19L3.2 18.4L9.2 10.4L10 11Z" fill="#050038"/> <circle cx="10" cy="11" r="2.25" fill="white" stroke="#050038" stroke-width="1.5"/> </svg>',
                         onClick: (widgets) => {
-                            //console.log('onClick', widgets)
                             checkLinesFrom = true;
                             checkLinesTo = true;
                             propagateTo = false;
@@ -148,7 +153,6 @@
                         tooltip: 'trace up',
                         svgIcon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <rect width="24" height="24" fill="white"/> <path d="M7 3.5C7 4.88071 5.88071 6 4.5 6C3.11929 6 2 4.88071 2 3.5C2 2.11929 3.11929 1 4.5 1C5.88071 1 7 2.11929 7 3.5Z" fill="#050038"/> <path d="M21 5.5C21 6.88071 19.8807 8 18.5 8C17.1193 8 16 6.88071 16 5.5C16 4.11929 17.1193 3 18.5 3C19.8807 3 21 4.11929 21 5.5Z" fill="#050038"/> <path d="M15 20.5C15 21.8807 13.8807 23 12.5 23C11.1193 23 10 21.8807 10 20.5C10 19.1193 11.1193 18 12.5 18C13.8807 18 15 19.1193 15 20.5Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L4 4L4.75926 3.34921L10.7593 10.3492L10 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L18 5L18.6 5.8L10.6 11.8L10 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L13 20L12.0513 20.3162L9.05132 11.3162L10 11Z" fill="#050038"/> <circle cx="12.2" cy="20.2" r="2.25" fill="white" stroke="#050038" stroke-width="1.5"/> <circle cx="10" cy="11" r="2.5" fill="#050038"/> </svg>',
                         onClick: (widgets) => {
-                            //console.log('onClick', widgets)
                             checkLinesFrom = false;
                             checkLinesTo = true;
                             propagateTo = true;
@@ -159,7 +163,6 @@
                         tooltip: 'trace down',
                         svgIcon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <rect width="24" height="24" fill="white"/> <path d="M7 3.5C7 4.88071 5.88071 6 4.5 6C3.11929 6 2 4.88071 2 3.5C2 2.11929 3.11929 1 4.5 1C5.88071 1 7 2.11929 7 3.5Z" fill="#050038"/> <path d="M22 15.5C22 16.8807 20.8807 18 19.5 18C18.1193 18 17 16.8807 17 15.5C17 14.1193 18.1193 13 19.5 13C20.8807 13 22 14.1193 22 15.5Z" fill="#050038"/> <path d="M15 20.5C15 21.8807 13.8807 23 12.5 23C11.1193 23 10 21.8807 10 20.5C10 19.1193 11.1193 18 12.5 18C13.8807 18 15 19.1193 15 20.5Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L4 4L4.75926 3.34921L10.7593 10.3492L10 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M11 11L19 15L18.5528 15.8944L10.5528 11.8944L11 11Z" fill="#050038"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M10 11L13 20L12.0513 20.3162L9.05132 11.3162L10 11Z" fill="#050038"/> <circle cx="4.5" cy="3.5" r="2.5" fill="#C4C4C4"/> <circle cx="10" cy="11" r="2.5" fill="#050038"/> <circle cx="5" cy="4" r="2.25" fill="white" stroke="#050038" stroke-width="1.5"/> </svg> ',
                         onClick: (widgets) => {
-                            //console.log('onClick', widgets)
                             checkLinesFrom = true;
                             checkLinesTo = false;
                             propagateTo = false;
@@ -171,6 +174,17 @@
                         svgIcon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7 3.5C7 4.88071 5.88071 6 4.5 6C3.11929 6 2 4.88071 2 3.5C2 2.11929 3.11929 1 4.5 1C5.88071 1 7 2.11929 7 3.5Z" fill="#050038"/> <path d="M21 5.5C21 6.88071 19.8807 8 18.5 8C17.1193 8 16 6.88071 16 5.5C16 4.11929 17.1193 3 18.5 3C19.8807 3 21 4.11929 21 5.5Z" fill="#050038"/> <path d="M22 15.5C22 16.8807 20.8807 18 19.5 18C18.1193 18 17 16.8807 17 15.5C17 14.1193 18.1193 13 19.5 13C20.8807 13 22 14.1193 22 15.5Z" fill="#050038"/> <path d="M15 20.5C15 21.8807 13.8807 23 12.5 23C11.1193 23 10 21.8807 10 20.5C10 19.1193 11.1193 18 12.5 18C13.8807 18 15 19.1193 15 20.5Z" fill="#050038"/> <path d="M7 17.5C7 18.8807 5.88071 20 4.5 20C3.11929 20 2 18.8807 2 17.5C2 16.1193 3.11929 15 4.5 15C5.88071 15 7 16.1193 7 17.5Z" fill="#050038"/> <circle cx="10" cy="11" r="2.5" fill="#050038"/> </svg>',
                         onClick: () => {
                             resetLines();
+                        }
+                    },
+                    {
+                        tooltip: 'move up to connected object',
+                        svgIcon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16 8L6.5 17.5" stroke="#050038"/> <path d="M19.5 7C19.5 8.38071 18.3807 9.5 17 9.5C15.6193 9.5 14.5 8.38071 14.5 7C14.5 5.61929 15.6193 4.5 17 4.5C18.3807 4.5 19.5 5.61929 19.5 7Z" fill="#050038"/> <rect x="11.5" y="1.5" width="11" height="11" stroke="#050038" stroke-dasharray="2 2"/> <path d="M6.39999 14V17.5355H9.93553" stroke="#050038"/> <circle cx="4" cy="20" r="2.25" fill="white" stroke="#050038" stroke-width="1.5"/></svg>', onClick: () => {
+                            goToObjectFrom();
+                        }
+                    },{
+                        tooltip: 'move down to connected object',
+                        svgIcon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M18 6L8.5 15.5" stroke="#050038"/> <path d="M21.5 5C21.5 6.38071 20.3807 7.5 19 7.5C17.6193 7.5 16.5 6.38071 16.5 5C16.5 3.61929 17.6193 2.5 19 2.5C20.3807 2.5 21.5 3.61929 21.5 5Z" fill="#050038"/> <circle cx="19" cy="5" r="2.25" fill="white" stroke="#050038" stroke-width="1.5"/> <path d="M9 17.5C9 18.8807 7.88071 20 6.5 20C5.11929 20 4 18.8807 4 17.5C4 16.1193 5.11929 15 6.5 15C7.88071 15 9 16.1193 9 17.5Z" fill="#050038"/> <rect x="2.5" y="10.5" width="11" height="11" stroke="#050038" stroke-dasharray="2 2"/> <path d="M8.39999 12V15.5355H11.9355" stroke="#050038"/></svg>', onClick: () => {
+                            goToObjectTo();
                         }
                     }])
                 }
