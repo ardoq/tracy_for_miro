@@ -92,13 +92,10 @@
         }
         if (loadCount == 0) {
             inspectedObjects = {};
-            if (linesTo.length > 0 && checkLinesTo) {
-                await miro.board.widgets.bringForward(linesTo)
-                await miro.board.widgets.update(linesTo)
-            }
-            if (linesFrom.length > 0 && checkLinesFrom) {
-                await miro.board.widgets.bringForward(linesFrom)
-                await miro.board.widgets.update(linesFrom)
+            const allLines = linesTo.concat(linesFrom);
+            if ((linesTo.length > 0 && checkLinesTo) || (linesFrom.length > 0 && checkLinesFrom)) {
+                await miro.board.widgets.bringForward(allLines)
+                await miro.board.widgets.update(allLines)
             }
             miro.board.ui.closeBottomPanel()
         }
